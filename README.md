@@ -6,7 +6,7 @@ A little offline tool to randomly select items from a dataset.
 
 ## Use cases
 
--   Get inspiration for tasks involving _composition_ in the broader sense involving custom compositional elements:
+-   Get inspiration for tasks involving _composition_ in the broader sense:
     -   Musical composition
     -   Writing
     -   Painting
