@@ -1,0 +1,14 @@
+{
+    "browser": true,
+    "esversion": 9,
+    "globals": {
+        "clusters": true
+    },
+    "curly": true,
+    "eqeqeq": true,
+    "latedef": true,
+    "shadow": "inner",
+    "undef": true,
+    "unused": true,
+    "varstmt": true
+}
