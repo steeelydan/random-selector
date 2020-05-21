@@ -53,9 +53,9 @@ function renderClusters() {
     mainArea.innerHTML = '';
 
     if (hiddenGroups.length === groups.length) {
-        hideShowAllGroupsButton.innerHTML = 'Show all groups';
+        hideShowAllGroupsButton.textContent = 'Show all groups';
     } else {
-        hideShowAllGroupsButton.innerHTML = 'Hide all groups';
+        hideShowAllGroupsButton.textContent = 'Hide all groups';
     }
 
     let hiddenCounter = 0;
@@ -72,7 +72,7 @@ function renderClusters() {
         clusterBox.classList.add('clusterBox', 'bg-gray');
 
         const title = clusterBox.appendChild(document.createElement('h2'));
-        title.innerHTML = cluster.title;
+        title.textContent = cluster.title;
         title.classList.add('heading', 'mb-3');
 
         const result = clusterBox.appendChild(document.createElement('span'));
@@ -80,7 +80,7 @@ function renderClusters() {
         result.setAttribute('name', cluster.title);
 
         clusterBox.addEventListener('click', () => {
-            result.innerHTML = selectRandom(cluster.items);
+            result.textContent = selectRandom(cluster.items);
             const oldColor = findColorClass(clusterBox.classList);
             const newColor = getNewColor(oldColor);
             clusterBox.classList.remove(oldColor);
@@ -90,7 +90,7 @@ function renderClusters() {
         mainArea.appendChild(clusterBox);
     }
 
-    hiddenCounterElement.innerHTML = `(${hiddenCounter} hidden)`;
+    hiddenCounterElement.textContent = `(${hiddenCounter} hidden)`;
 }
 
 // UI Events
@@ -104,7 +104,7 @@ diceButton.addEventListener('click', () => {
         clusterContainer.classList.remove(oldColor);
         clusterContainer.classList.add(newColor);
 
-        resultElement.innerHTML = selectRandom(
+        resultElement.textContent = selectRandom(
             clusters.find((cluster) => cluster.title === resultElementName)
                 .items
         );
