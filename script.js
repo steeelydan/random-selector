@@ -1,6 +1,5 @@
 /* global clusters:true */
 
-console.log(typeof clusters === 'undefined');
 if (typeof clusters === 'undefined') {
     alert(
         "It seems like you haven't renamed data.example.js into data.js. If you have, there's something wrong with your data."
