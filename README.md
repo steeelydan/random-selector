@@ -24,7 +24,7 @@ You only need a modern web browser (Firefox, Chrome, Safari, Edge, Brave...).
 
 Clone or download the repository and open `index.html`.
 
-Nothing exciting happens - because there is no data. To get a kickstart, just rename `data.example.js` to `data.js`. If you prefer to use your own data, just edit this file as desired.
+Nothing exciting happens - because there is no data. To get a kickstart, just rename `data.example.js` to `data.js`. If you prefer to use your own data, just edit this file as desired. If you'd like to get a bird's eye view over your data, click the "Raw data" button to see all of your input data.
 
 ## Concept & data sourcing
 
@@ -43,7 +43,6 @@ let clusters = [
 ```
 
 In the above example, the JavaScript object is a cluster with the title 'Breakfast'. The different meals in the 'items' array are the items belonging to the cluster.
-
 
 ## Using the app
 
