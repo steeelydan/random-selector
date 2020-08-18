@@ -22,7 +22,9 @@ You only need a modern web browser (Firefox, Chrome, Safari, Edge, Brave...).
 
 ## Running the app
 
-Just clone or download the repository and open `index.html`.
+Clone or download the repository and open `index.html`.
+
+Nothing exciting happens - because there is no data. To get a kickstart, just rename `data.example.js` to `data.js`. If you prefer to use your own data, just edit this file as desired.
 
 ## Concept & data sourcing
 
