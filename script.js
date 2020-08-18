@@ -34,7 +34,7 @@ function findColorClass(classList) {
     return 'bg-gray';
 }
 
-function getNewColor(oldColor) {
+function getNewRandomColor(oldColor) {
     let newColor = '';
 
     while (newColor === '' || newColor === oldColor) {
@@ -90,7 +90,7 @@ function renderClusters() {
         clusterBox.addEventListener('click', () => {
             result.textContent = selectRandomFromArray(cluster.items);
             const oldColor = findColorClass(clusterBox.classList);
-            const newColor = getNewColor(oldColor);
+            const newColor = getNewRandomColor(oldColor);
             clusterBox.classList.remove(oldColor);
             clusterBox.classList.add('clusterBox', newColor);
         });
@@ -108,7 +108,7 @@ diceButton.addEventListener('click', () => {
         const resultElementName = resultElement.getAttribute('name');
         const clusterContainer = resultElement.parentElement;
         const oldColor = findColorClass(clusterContainer.classList);
-        const newColor = getNewColor(oldColor);
+        const newColor = getNewRandomColor(oldColor);
         clusterContainer.classList.remove(oldColor);
         clusterContainer.classList.add(newColor);
 
