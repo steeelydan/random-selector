@@ -1,11 +1,13 @@
 /* global clusters:true */
 
+// Check if source data is available
 if (typeof clusters === 'undefined') {
     alert(
         "It seems like you haven't renamed data.example.js into data.js. If you have, there's something wrong with your data."
     );
 }
 
+// Color palette
 const randomColors = ['bg-blue', 'bg-orange', 'bg-green', 'bg-red'];
 
 // DOM Elements
@@ -31,6 +33,7 @@ function findColorClass(classList) {
         }
     }
 
+    // If nothing is found, return default color
     return 'bg-gray';
 }
 
@@ -58,6 +61,7 @@ clusters.forEach((cluster) => {
 // Main Area (Cluster & Item Rendering)
 
 function renderClusters() {
+    // Clear the canvas, Pablo
     mainArea.innerHTML = '';
 
     if (hiddenGroups.length === groups.length) {
@@ -68,6 +72,7 @@ function renderClusters() {
 
     let hiddenCounter = 0;
 
+    // Iterate our data to create those fancy colored boxes
     for (let i = 0; i < clusters.length; i++) {
         const cluster = clusters[i];
 
@@ -103,6 +108,7 @@ function renderClusters() {
 
 // UI Events
 
+// Randomize every cluster
 diceButton.addEventListener('click', () => {
     document.querySelectorAll('.result').forEach((resultElement) => {
         const resultElementName = resultElement.getAttribute('name');
@@ -119,6 +125,7 @@ diceButton.addEventListener('click', () => {
     });
 });
 
+// Clear all random results
 clearButton.addEventListener('click', () => {
     document.querySelectorAll('.result').forEach((resultElement) => {
         const clusterContainer = resultElement.parentElement;
@@ -129,6 +136,7 @@ clearButton.addEventListener('click', () => {
     });
 });
 
+// Toggle display of raw data in our UI
 rawDataButton.addEventListener('click', () => {
     if (rawDataArea.innerHTML) {
         rawDataArea.innerHTML = '';
@@ -140,6 +148,7 @@ rawDataButton.addEventListener('click', () => {
     }
 });
 
+// Hide / show all groups, depending on if they are visible atm
 hideShowAllGroupsButton.addEventListener('click', () => {
     if (hiddenGroups.length === groups.length) {
         // All groups are currently hidden. Clicking the button shows all groups.
@@ -172,8 +181,7 @@ hideShowAllGroupsButton.addEventListener('click', () => {
     renderClusters();
 });
 
-// Group Rendering & Events
-
+// Group button rendering & events
 groups.forEach((group) => {
     const groupToggle = document.createElement('button');
     groupToggle.classList.add('linkButton', 'group');
