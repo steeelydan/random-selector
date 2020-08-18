@@ -20,8 +20,8 @@ const rawDataArea = document.querySelector('#rawDataArea');
 
 // Utility functions
 
-function selectRandom(source) {
-    return source[Math.floor(Math.random() * source.length)];
+function selectRandomFromArray(sourceArray) {
+    return sourceArray[Math.floor(Math.random() * sourceArray.length)];
 }
 
 function findColorClass(classList) {
@@ -38,7 +38,7 @@ function getNewColor(oldColor) {
     let newColor = '';
 
     while (newColor === '' || newColor === oldColor) {
-        newColor = selectRandom(randomColors);
+        newColor = selectRandomFromArray(randomColors);
     }
 
     return newColor;
@@ -88,7 +88,7 @@ function renderClusters() {
         result.setAttribute('name', cluster.title);
 
         clusterBox.addEventListener('click', () => {
-            result.textContent = selectRandom(cluster.items);
+            result.textContent = selectRandomFromArray(cluster.items);
             const oldColor = findColorClass(clusterBox.classList);
             const newColor = getNewColor(oldColor);
             clusterBox.classList.remove(oldColor);
@@ -112,7 +112,7 @@ diceButton.addEventListener('click', () => {
         clusterContainer.classList.remove(oldColor);
         clusterContainer.classList.add(newColor);
 
-        resultElement.textContent = selectRandom(
+        resultElement.textContent = selectRandomFromArray(
             clusters.find((cluster) => cluster.title === resultElementName)
                 .items
         );
