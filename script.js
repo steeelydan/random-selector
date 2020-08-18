@@ -1,5 +1,3 @@
-/* global clusters:true */
-
 // Check if source data is available
 if (typeof clusters === 'undefined') {
     alert(
