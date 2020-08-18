@@ -5,10 +5,12 @@ const randomColors = ['bg-blue', 'bg-orange', 'bg-green', 'bg-red'];
 // DOM Elements
 const hideShowAllGroupsButton = document.querySelector('#hideShowAllGroups');
 const clearButton = document.querySelector('#clearButton');
+const rawDataButton = document.querySelector('#rawDataButton');
 const diceButton = document.querySelector('#diceButton');
 const hiddenCounterElement = document.querySelector('#hiddenCounter');
 const groupArea = document.querySelector('#groupArea');
 const mainArea = document.querySelector('#mainArea');
+const rawDataArea = document.querySelector('#rawDataArea');
 
 // Utility functions
 
@@ -119,6 +121,17 @@ clearButton.addEventListener('click', () => {
 
         resultElement.innerHTML = '';
     });
+});
+
+rawDataButton.addEventListener('click', () => {
+    if (rawDataArea.innerHTML) {
+        rawDataArea.innerHTML = '';
+        rawDataButton.classList.add('inactiveToggle');
+    } else {
+        const rawDataFormatted = JSON.stringify(clusters, null, 2);
+        rawDataArea.innerHTML = `<pre>${rawDataFormatted}</pre>`;
+        rawDataButton.classList.remove('inactiveToggle');
+    }
 });
 
 hideShowAllGroupsButton.addEventListener('click', () => {

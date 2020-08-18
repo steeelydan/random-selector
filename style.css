@@ -8,6 +8,14 @@
         'Noto Color Emoji';
 }
 
+#rawDataArea > pre {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.85rem;
+    background-color: #eeeeee;
+    border-radius: 5px;
+    padding: 5px;
+}
+
 /* Elements */
 
 .container {
