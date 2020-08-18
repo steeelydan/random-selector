@@ -2,7 +2,8 @@
     "browser": true,
     "esversion": 9,
     "globals": {
-        "clusters": true
+        "clusters": true,
+        "alert": true
     },
     "curly": true,
     "eqeqeq": true,
