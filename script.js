@@ -47,6 +47,15 @@ function getNewRandomColor(oldColor) {
     return newColor;
 }
 
+function changeColor(htmlElement, clear = false) {
+    const oldColor = findColorClass(htmlElement.classList);
+    const newColor = getNewRandomColor(oldColor);
+    htmlElement.classList.remove(oldColor);
+    if (!clear) {
+        htmlElement.classList.add(newColor);
+    }
+}
+
 // Initialize groups based on data
 
 let groups = [];
@@ -74,10 +83,7 @@ function createClusterBox(cluster) {
 
     clusterBox.addEventListener('click', () => {
         result.textContent = selectRandomFromArray(cluster.items);
-        const oldColor = findColorClass(clusterBox.classList);
-        const newColor = getNewRandomColor(oldColor);
-        clusterBox.classList.remove(oldColor);
-        clusterBox.classList.add('clusterBox', newColor);
+        changeColor(clusterBox);
     });
 
     return clusterBox;
@@ -87,6 +93,7 @@ function renderClusters() {
     // Reset the canvas, Pablo
     mainArea.innerHTML = '';
     singleArea.innerHTML = '';
+    singleArea.classList.remove(findColorClass(singleArea.classList));
 
     if (hiddenGroups.length === groups.length) {
         hideShowAllGroupsButton.textContent = 'Show all groups';
@@ -117,7 +124,7 @@ function renderClusters() {
 
 // Randomize every cluster
 diceButton.addEventListener('click', () => {
-    if(mainArea.innerHTML === '') {
+    if (mainArea.innerHTML === '') {
         renderClusters();
     }
 
@@ -151,10 +158,16 @@ singleButton.addEventListener('click', () => {
         }
     });
 
-    const result = selectRandomFromArray(items);
-
     mainArea.innerHTML = '';
-    singleArea.textContent = result;
+
+    if (items.length) {
+        const result = selectRandomFromArray(items);
+        singleArea.textContent = result;
+        changeColor(singleArea);
+    } else {
+        changeColor(singleArea, true);
+        singleArea.textContent = 'All groups are currently hidden. Nothing to choose from...';
+    }
 });
 
 // Toggle display of raw data in our UI
