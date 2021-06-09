@@ -46,7 +46,7 @@ In the above example, the JavaScript object is a cluster with the title 'Breakfa
 
 ## Using the app
 
-Each time you click on a cluster, a random item will be selected for each cluster. You can also randomize your whole cluster farm clicking on `Roll the dice`. To clear the results, click on `Clear`.
+Each time you click on a cluster, a random item will be selected for each cluster. You can also randomize your whole cluster farm clicking on `Roll the dice`. To clear the results, click on `Reset`.
 
 ## Grouping
 

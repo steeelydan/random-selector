@@ -10,13 +10,15 @@ const randomColors = ['bg-blue', 'bg-orange', 'bg-green', 'bg-red'];
 
 // DOM Elements
 const hideShowAllGroupsButton = document.querySelector('#hideShowAllGroups');
-const clearButton = document.querySelector('#clearButton');
+const resetButton = document.querySelector('#resetButton');
+const singleButton = document.querySelector('#singleButton');
 const rawDataButton = document.querySelector('#rawDataButton');
 const diceButton = document.querySelector('#diceButton');
 const hiddenCounterElement = document.querySelector('#hiddenCounter');
 const groupArea = document.querySelector('#groupArea');
 const mainArea = document.querySelector('#mainArea');
 const rawDataArea = document.querySelector('#rawDataArea');
+const singleArea = document.querySelector('#singleArea');
 
 // Utility functions
 
@@ -58,9 +60,33 @@ clusters.forEach((cluster) => {
 
 // Main Area (Cluster & Item Rendering)
 
+function createClusterBox(cluster) {
+    const clusterBox = document.createElement('div');
+    clusterBox.classList.add('clusterBox', 'bg-gray');
+
+    const title = clusterBox.appendChild(document.createElement('h2'));
+    title.textContent = cluster.title;
+    title.classList.add('heading', 'mb-3');
+
+    const result = clusterBox.appendChild(document.createElement('span'));
+    result.classList.add('result', 'item');
+    result.setAttribute('name', cluster.title);
+
+    clusterBox.addEventListener('click', () => {
+        result.textContent = selectRandomFromArray(cluster.items);
+        const oldColor = findColorClass(clusterBox.classList);
+        const newColor = getNewRandomColor(oldColor);
+        clusterBox.classList.remove(oldColor);
+        clusterBox.classList.add('clusterBox', newColor);
+    });
+
+    return clusterBox;
+}
+
 function renderClusters() {
-    // Clear the canvas, Pablo
+    // Reset the canvas, Pablo
     mainArea.innerHTML = '';
+    singleArea.innerHTML = '';
 
     if (hiddenGroups.length === groups.length) {
         hideShowAllGroupsButton.textContent = 'Show all groups';
@@ -79,24 +105,7 @@ function renderClusters() {
             continue;
         }
 
-        const clusterBox = document.createElement('div');
-        clusterBox.classList.add('clusterBox', 'bg-gray');
-
-        const title = clusterBox.appendChild(document.createElement('h2'));
-        title.textContent = cluster.title;
-        title.classList.add('heading', 'mb-3');
-
-        const result = clusterBox.appendChild(document.createElement('span'));
-        result.classList.add('result', 'item');
-        result.setAttribute('name', cluster.title);
-
-        clusterBox.addEventListener('click', () => {
-            result.textContent = selectRandomFromArray(cluster.items);
-            const oldColor = findColorClass(clusterBox.classList);
-            const newColor = getNewRandomColor(oldColor);
-            clusterBox.classList.remove(oldColor);
-            clusterBox.classList.add('clusterBox', newColor);
-        });
+        const clusterBox = createClusterBox(cluster);
 
         mainArea.appendChild(clusterBox);
     }
@@ -108,6 +117,10 @@ function renderClusters() {
 
 // Randomize every cluster
 diceButton.addEventListener('click', () => {
+    if(mainArea.innerHTML === '') {
+        renderClusters();
+    }
+
     document.querySelectorAll('.result').forEach((resultElement) => {
         const resultElementName = resultElement.getAttribute('name');
         const clusterContainer = resultElement.parentElement;
@@ -117,21 +130,31 @@ diceButton.addEventListener('click', () => {
         clusterContainer.classList.add(newColor);
 
         resultElement.textContent = selectRandomFromArray(
-            clusters.find((cluster) => cluster.title === resultElementName)
-                .items
+            clusters.find((cluster) => cluster.title === resultElementName).items
         );
     });
 });
 
-// Clear all random results
-clearButton.addEventListener('click', () => {
-    document.querySelectorAll('.result').forEach((resultElement) => {
-        const clusterContainer = resultElement.parentElement;
-        clusterContainer.className = '';
-        clusterContainer.classList.add('clusterBox', 'bg-gray');
+// Reset Everything
+resetButton.addEventListener('click', () => {
+    renderClusters();
+});
 
-        resultElement.innerHTML = '';
+// Show single result
+singleButton.addEventListener('click', () => {
+    const items = [];
+    clusters.forEach((cluster) => {
+        if (!cluster.hidden) {
+            cluster.items.forEach((item) => {
+                items.push(`${cluster.title}: ${item}`);
+            });
+        }
     });
+
+    const result = selectRandomFromArray(items);
+
+    mainArea.innerHTML = '';
+    singleArea.textContent = result;
 });
 
 // Toggle display of raw data in our UI
@@ -199,9 +222,7 @@ groups.forEach((group) => {
         });
 
         if (hiddenGroups.includes(group)) {
-            const removeIndex = hiddenGroups.findIndex(
-                (element) => element === group
-            );
+            const removeIndex = hiddenGroups.findIndex((element) => element === group);
             hiddenGroups.splice(removeIndex, 1);
             groupToggle.classList.remove('inactiveToggle');
         } else {
