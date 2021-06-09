@@ -11,24 +11,17 @@
             <h1 class="title">Random Selector</h1>
             <div class="mb-3">
                 <button id="diceButton" class="linkButton">Roll the dice</button
-                >&nbsp;|&nbsp;<button id="clearButton" class="linkButton">
-                    Clear
-                </button>
-            </div>
-            <div class="mb-9 mt-3 groupContainer">
-                Filters: <span id="groupArea"></span>|&nbsp;<button
-                    id="hideShowAllGroups"
-                    class="linkButton"
-                >
+                >&nbsp;|&nbsp;<button id="clearButton" class="linkButton">Clear</button
+                >&nbsp;|&nbsp;<button id="hideShowAllGroups" class="linkButton">
                     Hide all groups</button
-                >&nbsp;<span id="hiddenCounter">(0 hidden)</span
-                >&nbsp;|&nbsp;<button
+                >&nbsp;<span id="hiddenCounter">(0 hidden)</span>&nbsp;|&nbsp;<button
                     id="rawDataButton"
                     class="linkButton inactiveToggle"
                 >
                     Raw data
                 </button>
             </div>
+            <div class="mb-9 mt-3 groupContainer">Toggle groups: <span id="groupArea"></span></div>
             <div id="mainArea" class="mainArea mt-9"></div>
             <div id="rawDataArea"></div>
             <script src="data.js"></script>
