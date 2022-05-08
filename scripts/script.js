@@ -26,10 +26,11 @@ const rawDataAreaEl = document.querySelector('#rawDataArea');
 const singleAreaEl = document.querySelector('#singleArea');
 
 const state = {
-    lastBoxColor: null,
+    clusters: [],
     groups: [],
     hiddenGroups: [],
-    results: {}
+    results: {},
+    lastBoxColor: null
 };
 
 // Check if source data is available
