@@ -54,4 +54,4 @@ Clusters can be grouped in order to hide or show them groupwise. This way you ca
 
 ## Custom styles
 
-Copy the contents of `userdata/custom-styles-example.css` to a new file `userdata/custom-styles.css`. Modify styles at will.
+Copy the contents of `userdata/custom-styles.example.css` to a new file `userdata/custom-styles.css`. Modify styles at will.
