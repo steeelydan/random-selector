@@ -151,8 +151,7 @@ state.clusters.forEach((cluster) => {
 
 // Main Area (Cluster & Item Rendering)
 
-// New value for cluster
-function onClusterClick(cluster, clusterEl, resultEl) {
+function newClusterBoxValue(cluster, clusterEl, resultEl) {
     const value = selectRandomFromArray(cluster.items);
     resultEl.textContent = value;
     const color = setRandomBoxColor(clusterEl, false, state.lastBoxColor);
@@ -161,8 +160,7 @@ function onClusterClick(cluster, clusterEl, resultEl) {
     saveResults();
 }
 
-// Reset cluster
-function onClusterRightClick(cluster, clusterEl, resultEl) {
+function resetClusterBox(cluster, clusterEl, resultEl) {
     const colorClass = findColorClass(clusterEl.classList);
     clusterEl.classList.remove(colorClass);
     clusterEl.classList.add(COLOR_NAMES.itemBgGray);
@@ -189,13 +187,13 @@ function createClusterBox(cluster) {
     }
 
     clusterEl.addEventListener('click', () => {
-        onClusterClick(cluster, clusterEl, resultEl);
+        newClusterBoxValue(cluster, clusterEl, resultEl);
     });
 
     clusterEl.addEventListener('contextmenu', (event) => {
         event.preventDefault();
 
-        onClusterRightClick(cluster, clusterEl, resultEl);
+        resetClusterBox(cluster, clusterEl, resultEl);
     });
 
     return clusterEl;
