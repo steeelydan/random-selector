@@ -5,23 +5,23 @@
         Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
     --fontSize: 1rem;
-    --containerMaxWidth: 1024px;
+    --containerMaxWidth: 1280px;
     --itemWidth: 10rem;
     --itemHeight: 10rem;
     --itemBorderRadius: 5px;
     --itemTitleSize: 1rem;
-    --bgColor: white;
-    --textColor: black;
-    --rawDataBgColor: #eeeeee;
+    --bgColor: rgb(20, 20, 20);
+    --textColor: rgb(230, 230, 230);
+    --rawDataBgColor: #363636;
     --rawDataFontSize: 0.85rem;
-    --buttonHoverColor: #666666;
-    --buttonInactiveColor: #cccccc;
-    --itemBgGrayColor: #e2e8f0;
-    --itemBgBlueColor: #90cdf4;
-    --itemBgOrangeColor: #fbd38d;
-    --itemBgGreenColor: #9ae6b4;
-    --itemBgRedColor: #feb2b2;
-    --itemTitleColor: #718096;
+    --buttonHoverColor: #d6d6d6;
+    --buttonInactiveColor: #929292;
+    --itemBgGrayColor: #363636;
+    --itemBgBlueColor: #004e7e;
+    --itemBgOrangeColor: #e06c00;
+    --itemBgGreenColor: #009233;
+    --itemBgRedColor: #b90000;
+    --itemTitleColor: #cccccc;
 }
 
 /* General & app layout */
@@ -75,6 +75,8 @@ body {
 /* UI */
 
 .linkButton {
+    font-size: var(--fontSize);
+    color: var(--textColor);
     background: none;
     border: none;
     cursor: pointer;
@@ -107,8 +109,10 @@ body {
 }
 
 .item {
-    margin: 0 auto;
     text-align: center;
+    color: var(--textColor);
+    font-size: var(--fontSize);
+    margin: 0 auto;
 }
 
 .itemTitle {

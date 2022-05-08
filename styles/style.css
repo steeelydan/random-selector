@@ -75,6 +75,8 @@ body {
 /* UI */
 
 .linkButton {
+    font-size: var(--fontSize);
+    color: var(--textColor);
     background: none;
     border: none;
     cursor: pointer;
@@ -107,8 +109,10 @@ body {
 }
 
 .item {
-    margin: 0 auto;
     text-align: center;
+    color: var(--textColor);
+    font-size: var(--fontSize);
+    margin: 0 auto;
 }
 
 .itemTitle {
