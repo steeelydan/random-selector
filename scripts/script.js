@@ -5,8 +5,22 @@ if (typeof clusters === 'undefined') {
     );
 }
 
-// Color palette
-const randomColors = ['itemBg-blue', 'itemBg-orange', 'itemBg-green', 'itemBg-red'];
+// Constants
+
+const COLOR_NAMES = {
+    itemBgGray: 'itemBg-gray',
+    itemBgBlue: 'itemBg-blue',
+    itemBgOrange: 'itemBg-orange',
+    itemBgGreen: 'itemBg-green',
+    itemBgRed: 'itemBg-red'
+};
+
+const RANDOM_COLORS = [
+    COLOR_NAMES.itemBgBlue,
+    COLOR_NAMES.itemBgOrange,
+    COLOR_NAMES.itemBgGreen,
+    COLOR_NAMES.itemBgRed
+];
 
 // DOM Elements
 const resetButton = document.querySelector('#resetButton');
@@ -18,7 +32,12 @@ const mainArea = document.querySelector('#mainArea');
 const rawDataArea = document.querySelector('#rawDataArea');
 const singleArea = document.querySelector('#singleArea');
 
-let lastBoxColor = null;
+const state = {
+    lastBoxColor: null,
+    groups: [],
+    hiddenGroups: [],
+    results: {}
+};
 
 // Utility functions
 
@@ -26,28 +45,77 @@ function selectRandomFromArray(sourceArray) {
     return sourceArray[Math.floor(Math.random() * sourceArray.length)];
 }
 
+function saveToLocalStorage(key, data) {
+    localStorage.setItem(key, JSON.stringify(data));
+}
+
+function loadFromLocalStorage(key) {
+    const dataRaw = localStorage.getItem(key);
+
+    if (!dataRaw) {
+        return;
+    }
+
+    let dataParsed;
+
+    try {
+        dataParsed = JSON.parse(dataRaw);
+
+        return dataParsed;
+    } catch (e) {
+        console.error(e);
+        alert('Error parsing local storage data.');
+
+        return;
+    }
+}
+
+function saveResults() {
+    saveToLocalStorage('results', state.results);
+}
+
+function loadResults() {
+    const results = loadFromLocalStorage('results');
+
+    if (results) {
+        state.results = results;
+    }
+}
+
+function saveHiddenGroups() {
+    saveToLocalStorage('hiddenGroups', state.hiddenGroups);
+}
+
+function loadHiddenGroups() {
+    const hiddenGroups = loadFromLocalStorage('hiddenGroups');
+
+    if (hiddenGroups) {
+        state.hiddenGroups = hiddenGroups;
+    }
+}
+
 function findColorClass(classList) {
-    for (let i = 0; i < randomColors.length; i++) {
-        if (classList.contains(randomColors[i])) {
-            return randomColors[i];
+    for (let i = 0; i < RANDOM_COLORS.length; i++) {
+        if (classList.contains(RANDOM_COLORS[i])) {
+            return RANDOM_COLORS[i];
         }
     }
 
     // If nothing is found, return default color
-    return 'itemBg-gray';
+    return COLOR_NAMES.itemBgGray;
 }
 
 function getNewRandomColor(oldColor) {
     let newColor = '';
 
     while (newColor === '' || newColor === oldColor) {
-        newColor = selectRandomFromArray(randomColors);
+        newColor = selectRandomFromArray(RANDOM_COLORS);
     }
 
     return newColor;
 }
 
-function setBoxColor(htmlElement, clear = false, previousColor = null) {
+function setRandomBoxColor(htmlElement, clear = false, previousColor = null) {
     const oldColor = findColorClass(htmlElement.classList);
     let newColor;
 
@@ -65,17 +133,16 @@ function setBoxColor(htmlElement, clear = false, previousColor = null) {
         htmlElement.classList.add(newColor);
     }
 
-    lastBoxColor = newColor;
+    state.lastBoxColor = newColor;
+
+    return newColor;
 }
 
 // Initialize groups based on data
 
-let groups = [];
-let hiddenGroups = [];
-
 clusters.forEach((cluster) => {
-    if (cluster.group && !groups.includes(cluster.group)) {
-        groups.push(cluster.group);
+    if (cluster.group && !state.groups.includes(cluster.group)) {
+        state.groups.push(cluster.group);
     }
 });
 
@@ -83,7 +150,7 @@ clusters.forEach((cluster) => {
 
 function createItemBox(cluster) {
     const itemBox = document.createElement('div');
-    itemBox.classList.add('itemBox', 'itemBg-gray');
+    itemBox.classList.add('itemBox', COLOR_NAMES.itemBgGray);
 
     const title = itemBox.appendChild(document.createElement('h2'));
     title.textContent = cluster.title;
@@ -93,25 +160,38 @@ function createItemBox(cluster) {
     result.classList.add('result', 'item');
     result.setAttribute('name', cluster.title);
 
+    if (state.results[cluster.title]) {
+        result.textContent = state.results[cluster.title].value;
+        itemBox.classList.add(state.results[cluster.title].color);
+    }
+
     itemBox.addEventListener('click', () => {
-        result.textContent = selectRandomFromArray(cluster.items);
-        setBoxColor(itemBox, false, lastBoxColor);
+        const value = selectRandomFromArray(cluster.items);
+        result.textContent = value;
+        const color = setRandomBoxColor(itemBox, false, state.lastBoxColor);
+
+        state.results[cluster.title] = { value, color };
+        saveResults();
     });
 
     return itemBox;
 }
 
-function renderAllClusters() {
+function clearMainArea() {
     // Reset the canvas, Pablo
     mainArea.innerHTML = '';
     singleArea.innerHTML = '';
     singleArea.classList.remove(findColorClass(singleArea.classList));
+}
+
+function renderAllClusters() {
+    clearMainArea();
 
     // Iterate our data to create those fancy colored boxes
     for (let i = 0; i < clusters.length; i++) {
         const cluster = clusters[i];
 
-        if (cluster.hidden) {
+        if (cluster.hidden || (cluster.group && state.hiddenGroups.includes(cluster.group))) {
             continue;
         }
 
@@ -121,28 +201,93 @@ function renderAllClusters() {
     }
 }
 
+function renderGroupButtons() {
+    groupArea.innerHTML = '';
+
+    if (!state.groups.length) {
+        document.querySelector('.groupContainer').remove();
+        return;
+    }
+
+    state.groups.forEach((group) => {
+        const groupToggle = document.createElement('button');
+        groupToggle.classList.add('linkButton', 'group');
+        groupToggle.innerHTML = group + '&nbsp;';
+
+        if (state.hiddenGroups.includes(group)) {
+            groupToggle.setAttribute('title', 'Click to show group');
+            groupToggle.classList.add('inactiveButton');
+        } else {
+            groupToggle.setAttribute('title', 'Click to hide group');
+        }
+
+        groupToggle.addEventListener('click', () => {
+            clusters = clusters.map((cluster) => {
+                if (cluster.group === group) {
+                    if (!state.hiddenGroups.includes(group)) {
+                        return { ...cluster, hidden: true };
+                    } else {
+                        return { ...cluster, hidden: false };
+                    }
+                } else {
+                    return cluster;
+                }
+            });
+
+            if (state.hiddenGroups.includes(group)) {
+                const removeIndex = state.hiddenGroups.findIndex((element) => element === group);
+                state.hiddenGroups.splice(removeIndex, 1);
+                groupToggle.setAttribute('title', 'Click to hide group');
+                groupToggle.classList.remove('inactiveButton');
+            } else {
+                state.hiddenGroups.push(group);
+                groupToggle.setAttribute('title', 'Click to show group');
+                groupToggle.classList.add('inactiveButton');
+            }
+
+            saveHiddenGroups();
+            renderAllClusters();
+        });
+
+        groupArea.appendChild(groupToggle);
+    });
+}
+
+function randomizeEveryItem() {
+    document.querySelectorAll('.result').forEach((resultElement) => {
+        const resultElementName = resultElement.getAttribute('name');
+        const itemBox = resultElement.parentElement;
+        const boxColor = setRandomBoxColor(itemBox, false, state.lastBoxColor);
+
+        const value = selectRandomFromArray(
+            clusters.find((cluster) => cluster.title === resultElementName).items
+        );
+
+        resultElement.textContent = value;
+
+        state.results[resultElementName] = { value: value, color: boxColor };
+    });
+
+    saveResults();
+}
+
 // UI Events
 
 // Randomize every cluster
 diceButton.addEventListener('click', () => {
-    if (mainArea.innerHTML === '') {
-        renderAllClusters();
-    }
-
-    document.querySelectorAll('.result').forEach((resultElement) => {
-        const resultElementName = resultElement.getAttribute('name');
-        const itemBox = resultElement.parentElement;
-        setBoxColor(itemBox, false, lastBoxColor);
-
-        resultElement.textContent = selectRandomFromArray(
-            clusters.find((cluster) => cluster.title === resultElementName).items
-        );
-    });
+    clearMainArea();
+    renderAllClusters();
+    randomizeEveryItem();
 });
 
 // Reset Everything
 resetButton.addEventListener('click', () => {
+    state.hiddenGroups = [];
+    state.results = {};
+    saveHiddenGroups();
+    saveResults();
     renderAllClusters();
+    renderGroupButtons();
 });
 
 // Show single result
@@ -161,9 +306,9 @@ singleButton.addEventListener('click', () => {
     if (items.length) {
         const result = selectRandomFromArray(items);
         singleArea.textContent = result;
-        setBoxColor(singleArea, false, lastBoxColor);
+        setRandomBoxColor(singleArea, false, state.lastBoxColor);
     } else {
-        setBoxColor(singleArea, true, lastBoxColor);
+        setRandomBoxColor(singleArea, true, state.lastBoxColor);
         singleArea.textContent = 'All groups are currently hidden. Nothing to choose from...';
     }
 });
@@ -180,44 +325,7 @@ rawDataButton.addEventListener('click', () => {
     }
 });
 
-// Group button rendering & events
-groups.forEach((group) => {
-    const groupToggle = document.createElement('button');
-    groupToggle.classList.add('linkButton', 'group');
-    groupToggle.innerHTML = group + '&nbsp;';
-    groupToggle.setAttribute('title', 'Click to hide group');
-    groupToggle.addEventListener('click', () => {
-        clusters = clusters.map((cluster) => {
-            if (cluster.group === group) {
-                if (!hiddenGroups.includes(group)) {
-                    return { ...cluster, hidden: true };
-                } else {
-                    return { ...cluster, hidden: false };
-                }
-            } else {
-                return cluster;
-            }
-        });
-
-        if (hiddenGroups.includes(group)) {
-            const removeIndex = hiddenGroups.findIndex((element) => element === group);
-            hiddenGroups.splice(removeIndex, 1);
-            groupToggle.setAttribute('title', 'Click to hide group');
-            groupToggle.classList.remove('inactiveButton');
-        } else {
-            hiddenGroups.push(group);
-            groupToggle.setAttribute('title', 'Click to show group');
-            groupToggle.classList.add('inactiveButton');
-        }
-
-        renderAllClusters();
-    });
-
-    groupArea.appendChild(groupToggle);
-});
-
-if (!groups.length) {
-    document.querySelector('.groupContainer').remove();
-}
-
+loadResults();
+loadHiddenGroups();
+renderGroupButtons();
 renderAllClusters();
