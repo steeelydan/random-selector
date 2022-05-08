@@ -2,7 +2,7 @@
 
 A little offline tool to randomly select items from a dataset.
 
-![Screenshot](resources/screenshot.png)
+![Screenshot](documentation/screenshot.png)
 
 ## Use cases
 
@@ -24,13 +24,13 @@ You only need a modern web browser (Firefox, Chrome, Safari, Edge, Brave...).
 
 Clone or download the repository and open `index.html`.
 
-Nothing exciting happens - because there is no data. To get a kickstart, just rename `data.example.js` to `data.js`. If you prefer to use your own data, just edit this file as desired. If you'd like to get a bird's eye view over your data, click the "Raw data" button to see all of your input data.
+Nothing exciting happens - because there is no data. To get a kickstart, just rename `userdata/data.example.js` to `userdata/data.js`. If you prefer to use your own data, just edit this file as desired. If you'd like to get a bird's eye view over your data, click the "Raw data" button to see all of your input data.
 
 ## Concept & data sourcing
 
 Your data is structured in _clusters_ which contain similar _items_.
 
-Rename `data.example.js` to `data.js` (or create a new `data.js` file) and insert your own data following the schema:
+Rename `userdata/data.example.js` to `userdata/data.js` (or create a new `data.js` file in `/data`) and insert your own data following the schema:
 
 ```js
 let clusters = [
@@ -51,3 +51,7 @@ Each time you click on a cluster, a random item will be selected for each cluste
 ## Grouping
 
 Clusters can be grouped in order to hide or show them groupwise. This way you can focus on a single group or multiple groups of clusters. In order to group clusters, add the same group property to each cluster ('Food' in the example above).
+
+## Custom styles
+
+Copy the contents of `userdata/custom-styles-example.css` to a new file `userdata/custom-styles.css`. Modify styles at will.
