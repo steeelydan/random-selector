@@ -8,7 +8,7 @@
     --containerMaxWidth: 1280px;
     --itemWidth: 10rem;
     --itemHeight: 10rem;
-    --itemBorderRadius: 5px;
+    --itemBorderRadius: 0px;
     --itemTitleSize: 1rem;
     --bgColor: rgb(20, 20, 20);
     --textColor: rgb(230, 230, 230);
