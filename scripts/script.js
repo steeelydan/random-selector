@@ -73,7 +73,7 @@ function createItemBox(cluster) {
 
     const title = itemBox.appendChild(document.createElement('h2'));
     title.textContent = cluster.title;
-    title.classList.add('itemTitle', 'mb-3');
+    title.classList.add('itemTitle');
 
     const result = itemBox.appendChild(document.createElement('span'));
     result.classList.add('result', 'item');
@@ -161,11 +161,11 @@ singleButton.addEventListener('click', () => {
 rawDataButton.addEventListener('click', () => {
     if (rawDataArea.innerHTML) {
         rawDataArea.innerHTML = '';
-        rawDataButton.classList.add('inactiveToggle');
+        rawDataButton.classList.add('inactiveButton');
     } else {
         const rawDataFormatted = JSON.stringify(clusters, null, 2);
         rawDataArea.innerHTML = `<pre>${rawDataFormatted}</pre>`;
-        rawDataButton.classList.remove('inactiveToggle');
+        rawDataButton.classList.remove('inactiveButton');
     }
 });
 
@@ -192,11 +192,11 @@ groups.forEach((group) => {
             const removeIndex = hiddenGroups.findIndex((element) => element === group);
             hiddenGroups.splice(removeIndex, 1);
             groupToggle.setAttribute('title', 'Click to hide group');
-            groupToggle.classList.remove('inactiveToggle');
+            groupToggle.classList.remove('inactiveButton');
         } else {
             hiddenGroups.push(group);
             groupToggle.setAttribute('title', 'Click to show group');
-            groupToggle.classList.add('inactiveToggle');
+            groupToggle.classList.add('inactiveButton');
         }
 
         renderClusters();

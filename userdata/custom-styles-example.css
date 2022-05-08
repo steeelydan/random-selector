@@ -1,23 +1,37 @@
 /* Variables */
 
 :root {
-    --bgColor: white;
-    --textColor: black;
     --font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue',
         Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
+    --fontSize: 1rem;
     --containerMaxWidth: 1024px;
+    --itemWidth: 10rem;
+    --itemHeight: 10rem;
+    --itemBorderRadius: 5px;
+    --itemTitleSize: 1rem;
+    --bgColor: white;
+    --textColor: black;
+    --rawDataBgColor: #eeeeee;
+    --rawDataFontSize: 0.85rem;
+    --buttonHoverColor: #666666;
+    --buttonInactiveColor: #cccccc;
+    --itemBgGrayColor: #e2e8f0;
+    --itemBgBlueColor: #90cdf4;
+    --itemBgOrangeColor: #fbd38d;
+    --itemBgGreenColor: #9ae6b4;
+    --itemBgRedColor: #feb2b2;
+    --itemTitleColor: #718096;
 }
 
-/* General */
+/* General & app layout */
 
 body {
     color: var(--textColor);
     background-color: var(--bgColor);
     font-family: var(--font);
+    font-size: var(--fontSize);
 }
-
-/* App layout and style */
 
 .container {
     padding: 0.7rem;
@@ -25,22 +39,34 @@ body {
     margin: 0 auto;
 }
 
+.menubar {
+    margin-bottom: 0.6rem;
+}
+
 .mainArea {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    margin-top: 0.9rem;
+    margin-bottom: 0.9rem;
 }
 
 .singleArea {
+    text-align: center;
+    margin-bottom: 0.9rem;
     padding: 0.5rem;
     border-radius: 5px;
-    text-align: center;
+}
+
+.groupContainer {
+    margin-top: 0.3rem;
+    margin-bottom: 1.2rem;
 }
 
 #rawDataArea > pre {
     font-family: 'Courier New', Courier, monospace;
-    font-size: 0.85rem;
-    background-color: #eeeeee;
+    font-size: var(--rawDataFontSize);
+    background-color: var(--rawDataBgColor);
     border-radius: 5px;
     padding: 5px;
     user-select: text;
@@ -55,15 +81,15 @@ body {
 }
 
 .linkButton:hover {
-    color: #666666;
+    color: var(--buttonHoverColor);
 }
 
 .linkButton:focus {
     outline: 0;
 }
 
-.inactiveToggle {
-    color: #cccccc;
+.inactiveButton {
+    color: var(--buttonInactiveColor);
 }
 
 /* Items */
@@ -71,12 +97,12 @@ body {
 .itemBox {
     display: flex;
     flex-direction: column;
-    width: 10rem;
-    height: 10rem;
+    width: var(--itemWidth);
+    height: var(--itemHeight);
     margin: 0 1.2rem 1.2rem 0;
     padding: 0.3rem;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: var(--itemBorderRadius);
     overflow: hidden;
 }
 
@@ -87,27 +113,27 @@ body {
 
 .itemTitle {
     font-weight: normal;
-    font-size: 1rem;
-    color: #718096;
-    margin: 0 auto;
+    font-size: var(--itemTitleSize);
+    color: var(--itemTitleColor);
+    margin: 0 auto 0.3rem auto;
 }
 
 .itemBg-gray {
-    background-color: #e2e8f0;
+    background-color: var(--itemBgGrayColor);
 }
 
 .itemBg-blue {
-    background-color: #90cdf4;
+    background-color: var(--itemBgBlueColor);
 }
 
 .itemBg-orange {
-    background-color: #fbd38d;
+    background-color: var(--itemBgOrangeColor);
 }
 
 .itemBg-green {
-    background-color: #9ae6b4;
+    background-color: var(--itemBgGreenColor);
 }
 
 .itemBg-red {
-    background-color: #feb2b2;
+    background-color: var(--itemBgRedColor);
 }

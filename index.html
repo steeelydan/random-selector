@@ -3,13 +3,14 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="styles/reset.css" />
         <link rel="stylesheet" href="styles/style.css" />
         <link rel="stylesheet" href="userdata/custom-styles.css" />
         <title>Random Selector</title>
     </head>
     <body>
         <div class="container">
-            <div class="mb-6">
+            <div class="menubar">
                 <button id="diceButton" class="linkButton" title="Randomize all">🎲</button
                 >&nbsp;|&nbsp;<button id="resetButton" class="linkButton" title="Reset">↩</button
                 >&nbsp;|&nbsp;<button
@@ -20,19 +21,19 @@
                     Single</button
                 >&nbsp;|&nbsp;<button
                     id="rawDataButton"
-                    class="linkButton inactiveToggle"
+                    class="linkButton inactiveButton"
                     title="Show raw data"
                 >
                     Raw data
                 </button>
             </div>
             <div
-                class="mb-12 mt-3 groupContainer"
+                class="groupContainer"
             >
                 Toggle groups: <span id="groupArea"></span>
             </div>
-            <div id="mainArea" class="mainArea mt-9 mb-9"></div>
-            <div id="singleArea" class="singleArea mb-9"></div>
+            <div id="mainArea" class="mainArea"></div>
+            <div id="singleArea" class="singleArea"></div>
             <div id="rawDataArea"></div>
             <script src="userdata/data.js"></script>
             <script src="scripts/script.js"></script>
