@@ -213,7 +213,7 @@ function renderAllClusters() {
     for (let i = 0; i < state.clusters.length; i++) {
         const cluster = state.clusters[i];
 
-        if (cluster.hidden || (cluster.group && state.hiddenGroups.includes(cluster.group))) {
+        if (cluster.group && state.hiddenGroups.includes(cluster.group)) {
             continue;
         }
 
@@ -224,18 +224,6 @@ function renderAllClusters() {
 }
 
 function toggleGroup(group, groupToggle) {
-    state.clusters = state.clusters.map((cluster) => {
-        if (cluster.group === group) {
-            if (!state.hiddenGroups.includes(group)) {
-                return { ...cluster, hidden: true };
-            } else {
-                return { ...cluster, hidden: false };
-            }
-        } else {
-            return cluster;
-        }
-    });
-
     if (state.hiddenGroups.includes(group)) {
         const removeIndex = state.hiddenGroups.findIndex((element) => element === group);
         state.hiddenGroups.splice(removeIndex, 1);
@@ -299,7 +287,7 @@ function getAllItems() {
     const items = [];
 
     state.clusters.forEach((cluster) => {
-        if (!cluster.hidden) {
+        if (!cluster.group || !state.hiddenGroups.includes(cluster.group)) {
             cluster.items.forEach((item) => {
                 items.push(`${cluster.title}: ${item}`);
             });
