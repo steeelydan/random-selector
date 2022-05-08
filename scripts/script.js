@@ -151,44 +151,54 @@ state.clusters.forEach((cluster) => {
 
 // Main Area (Cluster & Item Rendering)
 
-function createClusterBox(cluster) {
-    const clusterBox = document.createElement('div');
-    clusterBox.classList.add('clusterBox', COLOR_NAMES.itemBgGray);
+// New value for cluster
+function onClusterClick(cluster, clusterEl, resultEl) {
+    const value = selectRandomFromArray(cluster.items);
+    resultEl.textContent = value;
+    const color = setRandomBoxColor(clusterEl, false, state.lastBoxColor);
 
-    const title = clusterBox.appendChild(document.createElement('h2'));
+    state.results[cluster.title] = { value, color };
+    saveResults();
+}
+
+// Reset cluster
+function onClusterRightClick(cluster, clusterEl, resultEl) {
+    const colorClass = findColorClass(clusterEl.classList);
+    clusterEl.classList.remove(colorClass);
+    clusterEl.classList.add(COLOR_NAMES.itemBgGray);
+    resultEl.textContent = '';
+    delete state.results[cluster.title];
+    saveResults();
+}
+
+function createClusterBox(cluster) {
+    const clusterEl = document.createElement('div');
+    clusterEl.classList.add('clusterBox', COLOR_NAMES.itemBgGray);
+
+    const title = clusterEl.appendChild(document.createElement('h2'));
     title.textContent = cluster.title;
     title.classList.add('itemTitle');
 
-    const result = clusterBox.appendChild(document.createElement('span'));
-    result.classList.add('result', 'item');
-    result.setAttribute('name', cluster.title);
+    const resultEl = clusterEl.appendChild(document.createElement('span'));
+    resultEl.classList.add('result', 'item');
+    resultEl.setAttribute('name', cluster.title);
 
     if (state.results[cluster.title]) {
-        result.textContent = state.results[cluster.title].value;
-        clusterBox.classList.add(state.results[cluster.title].color);
+        resultEl.textContent = state.results[cluster.title].value;
+        clusterEl.classList.add(state.results[cluster.title].color);
     }
 
-    clusterBox.addEventListener('click', () => {
-        const value = selectRandomFromArray(cluster.items);
-        result.textContent = value;
-        const color = setRandomBoxColor(clusterBox, false, state.lastBoxColor);
-
-        state.results[cluster.title] = { value, color };
-        saveResults();
+    clusterEl.addEventListener('click', () => {
+        onClusterClick(cluster, clusterEl, resultEl);
     });
 
-    clusterBox.addEventListener('contextmenu', (event) => {
+    clusterEl.addEventListener('contextmenu', (event) => {
         event.preventDefault();
 
-        const colorClass = findColorClass(clusterBox.classList);
-        clusterBox.classList.remove(colorClass);
-        clusterBox.classList.add(COLOR_NAMES.itemBgGray);
-        result.textContent = '';
-        delete state.results[cluster.title];
-        saveResults();
+        onClusterRightClick(cluster, clusterEl, resultEl);
     });
 
-    return clusterBox;
+    return clusterEl;
 }
 
 function clearMainArea() {
@@ -215,6 +225,34 @@ function renderAllClusters() {
     }
 }
 
+function toggleGroup(group, groupToggle) {
+    state.clusters = state.clusters.map((cluster) => {
+        if (cluster.group === group) {
+            if (!state.hiddenGroups.includes(group)) {
+                return { ...cluster, hidden: true };
+            } else {
+                return { ...cluster, hidden: false };
+            }
+        } else {
+            return cluster;
+        }
+    });
+
+    if (state.hiddenGroups.includes(group)) {
+        const removeIndex = state.hiddenGroups.findIndex((element) => element === group);
+        state.hiddenGroups.splice(removeIndex, 1);
+        groupToggle.setAttribute('title', 'Click to hide group');
+        groupToggle.classList.remove('inactiveButton');
+    } else {
+        state.hiddenGroups.push(group);
+        groupToggle.setAttribute('title', 'Click to show group');
+        groupToggle.classList.add('inactiveButton');
+    }
+
+    saveHiddenGroups();
+    renderAllClusters();
+}
+
 function renderGroupButtons() {
     groupAreaEl.innerHTML = '';
 
@@ -235,33 +273,7 @@ function renderGroupButtons() {
             groupToggle.setAttribute('title', 'Click to hide group');
         }
 
-        groupToggle.addEventListener('click', () => {
-            state.clusters = state.clusters.map((cluster) => {
-                if (cluster.group === group) {
-                    if (!state.hiddenGroups.includes(group)) {
-                        return { ...cluster, hidden: true };
-                    } else {
-                        return { ...cluster, hidden: false };
-                    }
-                } else {
-                    return cluster;
-                }
-            });
-
-            if (state.hiddenGroups.includes(group)) {
-                const removeIndex = state.hiddenGroups.findIndex((element) => element === group);
-                state.hiddenGroups.splice(removeIndex, 1);
-                groupToggle.setAttribute('title', 'Click to hide group');
-                groupToggle.classList.remove('inactiveButton');
-            } else {
-                state.hiddenGroups.push(group);
-                groupToggle.setAttribute('title', 'Click to show group');
-                groupToggle.classList.add('inactiveButton');
-            }
-
-            saveHiddenGroups();
-            renderAllClusters();
-        });
+        groupToggle.addEventListener('click', () => toggleGroup(group, groupToggle));
 
         groupAreaEl.appendChild(groupToggle);
     });
@@ -299,27 +311,13 @@ function getAllItems() {
     return items;
 }
 
-// UI Events
-
-// Reset Everything
-resetButtonEl.addEventListener('click', () => {
-    state.hiddenGroups = [];
+function reset() {
     state.results = {};
-    saveHiddenGroups();
     saveResults();
     renderAllClusters();
-    renderGroupButtons();
-});
+}
 
-// Randomize every cluster
-diceButtonEl.addEventListener('click', () => {
-    clearMainArea();
-    renderAllClusters();
-    randomizeEveryItem();
-});
-
-// Show single result
-singleButtonEl.addEventListener('click', () => {
+function showSingleResult() {
     const allItems = getAllItems();
 
     mainAreaEl.innerHTML = '';
@@ -332,10 +330,9 @@ singleButtonEl.addEventListener('click', () => {
         setRandomBoxColor(singleAreaEl, true, state.lastBoxColor);
         singleAreaEl.textContent = 'All groups are currently hidden. Nothing to choose from...';
     }
-});
+}
 
-// Toggle raw data display
-rawDataButtonEl.addEventListener('click', () => {
+function toggleRawDataDisplay() {
     if (rawDataAreaEl.innerHTML) {
         rawDataAreaEl.innerHTML = '';
         rawDataButtonEl.classList.add('inactiveButton');
@@ -344,6 +341,27 @@ rawDataButtonEl.addEventListener('click', () => {
         rawDataAreaEl.innerHTML = `<pre>${rawDataFormatted}</pre>`;
         rawDataButtonEl.classList.remove('inactiveButton');
     }
+}
+
+// UI Actions
+
+resetButtonEl.addEventListener('click', () => {
+    reset();
+});
+
+diceButtonEl.addEventListener('click', () => {
+    clearMainArea();
+    renderAllClusters();
+    randomizeEveryItem();
+});
+
+singleButtonEl.addEventListener('click', () => {
+    showSingleResult();
+});
+
+// Toggle raw data display
+rawDataButtonEl.addEventListener('click', () => {
+    toggleRawDataDisplay();
 });
 
 loadResults();
