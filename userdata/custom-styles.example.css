@@ -96,7 +96,7 @@ body {
 
 /* Items */
 
-.itemBox {
+.clusterBox {
     display: flex;
     flex-direction: column;
     width: var(--itemWidth);

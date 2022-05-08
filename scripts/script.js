@@ -1,10 +1,3 @@
-// Check if source data is available
-if (typeof clusters === 'undefined') {
-    alert(
-        "It seems like you haven't renamed data.example.js into data.js. If you have, there's something wrong with your data."
-    );
-}
-
 // Constants
 
 const COLOR_NAMES = {
@@ -23,14 +16,14 @@ const RANDOM_COLORS = [
 ];
 
 // DOM Elements
-const resetButton = document.querySelector('#resetButton');
-const singleButton = document.querySelector('#singleButton');
-const rawDataButton = document.querySelector('#rawDataButton');
-const diceButton = document.querySelector('#diceButton');
-const groupArea = document.querySelector('#groupArea');
-const mainArea = document.querySelector('#mainArea');
-const rawDataArea = document.querySelector('#rawDataArea');
-const singleArea = document.querySelector('#singleArea');
+const resetButtonEl = document.querySelector('#resetButton');
+const singleButtonEl = document.querySelector('#singleButton');
+const rawDataButtonEl = document.querySelector('#rawDataButton');
+const diceButtonEl = document.querySelector('#diceButton');
+const groupAreaEl = document.querySelector('#groupArea');
+const mainAreaEl = document.querySelector('#mainArea');
+const rawDataAreaEl = document.querySelector('#rawDataArea');
+const singleAreaEl = document.querySelector('#singleArea');
 
 const state = {
     lastBoxColor: null,
@@ -38,6 +31,15 @@ const state = {
     hiddenGroups: [],
     results: {}
 };
+
+// Check if source data is available
+if (typeof clusters === 'undefined') {
+    alert(
+        "It seems like you haven't renamed data.example.js into data.js. If you have, there's something wrong with your data."
+    );
+} else {
+    state.clusters = clusters;
+}
 
 // Utility functions
 
@@ -140,7 +142,7 @@ function setRandomBoxColor(htmlElement, clear = false, previousColor = null) {
 
 // Initialize groups based on data
 
-clusters.forEach((cluster) => {
+state.clusters.forEach((cluster) => {
     if (cluster.group && !state.groups.includes(cluster.group)) {
         state.groups.push(cluster.group);
     }
@@ -148,61 +150,61 @@ clusters.forEach((cluster) => {
 
 // Main Area (Cluster & Item Rendering)
 
-function createItemBox(cluster) {
-    const itemBox = document.createElement('div');
-    itemBox.classList.add('itemBox', COLOR_NAMES.itemBgGray);
+function createClusterBox(cluster) {
+    const clusterBox = document.createElement('div');
+    clusterBox.classList.add('clusterBox', COLOR_NAMES.itemBgGray);
 
-    const title = itemBox.appendChild(document.createElement('h2'));
+    const title = clusterBox.appendChild(document.createElement('h2'));
     title.textContent = cluster.title;
     title.classList.add('itemTitle');
 
-    const result = itemBox.appendChild(document.createElement('span'));
+    const result = clusterBox.appendChild(document.createElement('span'));
     result.classList.add('result', 'item');
     result.setAttribute('name', cluster.title);
 
     if (state.results[cluster.title]) {
         result.textContent = state.results[cluster.title].value;
-        itemBox.classList.add(state.results[cluster.title].color);
+        clusterBox.classList.add(state.results[cluster.title].color);
     }
 
-    itemBox.addEventListener('click', () => {
+    clusterBox.addEventListener('click', () => {
         const value = selectRandomFromArray(cluster.items);
         result.textContent = value;
-        const color = setRandomBoxColor(itemBox, false, state.lastBoxColor);
+        const color = setRandomBoxColor(clusterBox, false, state.lastBoxColor);
 
         state.results[cluster.title] = { value, color };
         saveResults();
     });
 
-    return itemBox;
+    return clusterBox;
 }
 
 function clearMainArea() {
     // Reset the canvas, Pablo
-    mainArea.innerHTML = '';
-    singleArea.innerHTML = '';
-    singleArea.classList.remove(findColorClass(singleArea.classList));
+    mainAreaEl.innerHTML = '';
+    singleAreaEl.innerHTML = '';
+    singleAreaEl.classList.remove(findColorClass(singleAreaEl.classList));
 }
 
 function renderAllClusters() {
     clearMainArea();
 
     // Iterate our data to create those fancy colored boxes
-    for (let i = 0; i < clusters.length; i++) {
-        const cluster = clusters[i];
+    for (let i = 0; i < state.clusters.length; i++) {
+        const cluster = state.clusters[i];
 
         if (cluster.hidden || (cluster.group && state.hiddenGroups.includes(cluster.group))) {
             continue;
         }
 
-        const itemBox = createItemBox(cluster);
+        const clusterBox = createClusterBox(cluster);
 
-        mainArea.appendChild(itemBox);
+        mainAreaEl.appendChild(clusterBox);
     }
 }
 
 function renderGroupButtons() {
-    groupArea.innerHTML = '';
+    groupAreaEl.innerHTML = '';
 
     if (!state.groups.length) {
         document.querySelector('.groupContainer').remove();
@@ -222,7 +224,7 @@ function renderGroupButtons() {
         }
 
         groupToggle.addEventListener('click', () => {
-            clusters = clusters.map((cluster) => {
+            state.clusters = state.clusters.map((cluster) => {
                 if (cluster.group === group) {
                     if (!state.hiddenGroups.includes(group)) {
                         return { ...cluster, hidden: true };
@@ -249,18 +251,18 @@ function renderGroupButtons() {
             renderAllClusters();
         });
 
-        groupArea.appendChild(groupToggle);
+        groupAreaEl.appendChild(groupToggle);
     });
 }
 
 function randomizeEveryItem() {
     document.querySelectorAll('.result').forEach((resultElement) => {
         const resultElementName = resultElement.getAttribute('name');
-        const itemBox = resultElement.parentElement;
-        const boxColor = setRandomBoxColor(itemBox, false, state.lastBoxColor);
+        const clusterBox = resultElement.parentElement;
+        const boxColor = setRandomBoxColor(clusterBox, false, state.lastBoxColor);
 
         const value = selectRandomFromArray(
-            clusters.find((cluster) => cluster.title === resultElementName).items
+            state.clusters.find((cluster) => cluster.title === resultElementName).items
         );
 
         resultElement.textContent = value;
@@ -271,17 +273,24 @@ function randomizeEveryItem() {
     saveResults();
 }
 
+function getAllItems() {
+    const items = [];
+
+    state.clusters.forEach((cluster) => {
+        if (!cluster.hidden) {
+            cluster.items.forEach((item) => {
+                items.push(`${cluster.title}: ${item}`);
+            });
+        }
+    });
+
+    return items;
+}
+
 // UI Events
 
-// Randomize every cluster
-diceButton.addEventListener('click', () => {
-    clearMainArea();
-    renderAllClusters();
-    randomizeEveryItem();
-});
-
 // Reset Everything
-resetButton.addEventListener('click', () => {
+resetButtonEl.addEventListener('click', () => {
     state.hiddenGroups = [];
     state.results = {};
     saveHiddenGroups();
@@ -290,38 +299,38 @@ resetButton.addEventListener('click', () => {
     renderGroupButtons();
 });
 
+// Randomize every cluster
+diceButtonEl.addEventListener('click', () => {
+    clearMainArea();
+    renderAllClusters();
+    randomizeEveryItem();
+});
+
 // Show single result
-singleButton.addEventListener('click', () => {
-    const items = [];
-    clusters.forEach((cluster) => {
-        if (!cluster.hidden) {
-            cluster.items.forEach((item) => {
-                items.push(`${cluster.title}: ${item}`);
-            });
-        }
-    });
+singleButtonEl.addEventListener('click', () => {
+    const allItems = getAllItems();
 
-    mainArea.innerHTML = '';
+    mainAreaEl.innerHTML = '';
 
-    if (items.length) {
-        const result = selectRandomFromArray(items);
-        singleArea.textContent = result;
-        setRandomBoxColor(singleArea, false, state.lastBoxColor);
+    if (allItems.length) {
+        const result = selectRandomFromArray(allItems);
+        singleAreaEl.textContent = result;
+        setRandomBoxColor(singleAreaEl, false, state.lastBoxColor);
     } else {
-        setRandomBoxColor(singleArea, true, state.lastBoxColor);
-        singleArea.textContent = 'All groups are currently hidden. Nothing to choose from...';
+        setRandomBoxColor(singleAreaEl, true, state.lastBoxColor);
+        singleAreaEl.textContent = 'All groups are currently hidden. Nothing to choose from...';
     }
 });
 
-// Toggle display of raw data in our UI
-rawDataButton.addEventListener('click', () => {
-    if (rawDataArea.innerHTML) {
-        rawDataArea.innerHTML = '';
-        rawDataButton.classList.add('inactiveButton');
+// Toggle raw data display
+rawDataButtonEl.addEventListener('click', () => {
+    if (rawDataAreaEl.innerHTML) {
+        rawDataAreaEl.innerHTML = '';
+        rawDataButtonEl.classList.add('inactiveButton');
     } else {
-        const rawDataFormatted = JSON.stringify(clusters, null, 2);
-        rawDataArea.innerHTML = `<pre>${rawDataFormatted}</pre>`;
-        rawDataButton.classList.remove('inactiveButton');
+        const rawDataFormatted = JSON.stringify(state.clusters, null, 2);
+        rawDataAreaEl.innerHTML = `<pre>${rawDataFormatted}</pre>`;
+        rawDataButtonEl.classList.remove('inactiveButton');
     }
 });
 
