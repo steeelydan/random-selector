@@ -179,7 +179,7 @@ function createClusterBox(cluster) {
 
     const resultEl = clusterEl.appendChild(document.createElement('span'));
     resultEl.classList.add('result', 'item');
-    resultEl.setAttribute('name', cluster.title);
+    resultEl.dataset.clusterName = cluster.title;
 
     if (state.results[cluster.title]) {
         resultEl.textContent = state.results[cluster.title].value;
@@ -267,7 +267,7 @@ function renderGroupButtons() {
 
 function randomizeEveryItem() {
     document.querySelectorAll('.result').forEach((resultElement) => {
-        const resultElementName = resultElement.getAttribute('name');
+        const resultElementName = resultElement.dataset.clusterName;
         const clusterBox = resultElement.parentElement;
         const boxColor = setRandomBoxColor(clusterBox, false, state.lastBoxColor);
 
