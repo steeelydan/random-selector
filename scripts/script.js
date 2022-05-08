@@ -177,6 +177,17 @@ function createClusterBox(cluster) {
         saveResults();
     });
 
+    clusterBox.addEventListener('contextmenu', (event) => {
+        event.preventDefault();
+
+        const colorClass = findColorClass(clusterBox.classList);
+        clusterBox.classList.remove(colorClass);
+        clusterBox.classList.add(COLOR_NAMES.itemBgGray);
+        result.textContent = '';
+        delete state.results[cluster.title];
+        saveResults();
+    });
+
     return clusterBox;
 }
 
